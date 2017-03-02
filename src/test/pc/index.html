@@ -1,0 +1,61 @@
+<!-- index.html for PC -->
+<!-- test_7 -->
+<!-- test about milkcocoa with simple data -->
+
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+  <title>Milk Cocoa Test PC側</title>
+  <style>
+  * { font-family: sans-serif }
+  </style>
+</head>
+<body>
+  <h2> PC </h2>
+  <input type="button" value="To SmartPhone" onclick="ButtonClickUpdate()"/>
+  <p id="output1"></p>
+  <p id="output2"></p>
+  <p id="output3"></p>
+  <p id="output4"></p>
+  <script src='https://cdn.mlkcca.com/v0.6.0/milkcocoa.js'></script>
+  <script>
+    var n = 0;
+	// app_id, API_Key, API_Secretは自分のものに書き換えてください
+	var App_Id = 'vueizqbi179.mlkcca.com';
+	var API_Key = 'LJCBGLCPOEPEGFFP';
+	var API_Secret = 'lYMejakSknAfLXYZTZVPSjMVePRHCkIHWbJleLBm';
+
+    // create MilkCocoa object (milkcocoa serverに接続)
+	var milkcocoa = MilkCocoa.connectWithApiKey(App_Id, API_Key, API_Secret);
+    // create Data Store object
+	var dsToPC = milkcocoa.dataStore('toPC');
+    var dsToSP = milkcocoa.dataStore('toSP');
+    
+    // 受信処理
+	dsToPC.on('send', receiveData);
+	function receiveData(sent){
+	    console.log("receiveData");
+		output1.innerHTML = 'category: ' + sent.value.category;
+		output2.innerHTML = 'device: ' + sent.value.device;
+		output3.innerHTML = 'func: ' + sent.value.func;
+		output4.innerHTML = 'param: ' + sent.value.param;     
+	}
+
+    // 送信処理
+    function ButtonClickUpdate() {
+	    n += 1;
+		dsToSP.send({category: "echonetlite", 
+                     device: "Lighting_1", 
+                     func: "setTemperature", 
+                     param: "data " + n
+                    });             // send
+		dsToSP.push({category: "echonetlite", 
+                     device: "Lighting_1", 
+                     func: "setTemperature", 
+                     param: "data " + n
+                    });             // send and store
+    }
+  </script>
+</body>
+</html>
